@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-rekognition": "^3.521.0"
+    "@aws-sdk/client-rekognition": "^3.521.0",
+    "@aws-sdk/client-s3": "^3.523.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
   }
 }
