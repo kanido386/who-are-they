@@ -6,7 +6,10 @@ const {
   DeleteCollectionCommand,
   DescribeCollectionCommand,
   DetectFacesCommand,
-  IndexFacesCommand
+  IndexFacesCommand,
+  CreateUserCommand,
+  AssociateFacesCommand,
+  SearchUsersByImageCommand
 } = require('@aws-sdk/client-rekognition')
 const client = new RekognitionClient()
 
@@ -96,11 +99,56 @@ const indexFaces = async (collectionId, bucket, name, externalImageId) => {
   console.dir(response, { depth: null })
 }
 
+const createUser = async (collectionId, userId) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/CreateUserCommand/
+  const input = {
+    CollectionId: collectionId,
+    UserId: userId
+  }
+  const command = new CreateUserCommand(input)
+  const response = await client.send(command);
+  console.log('createUser response:')
+  console.dir(response, { depth: null })
+}
+
+const associateFaces = async (collectionId, userId, faceIds) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/AssociateFacesCommand/
+  const input = {
+    CollectionId: collectionId,
+    UserId: userId,
+    FaceIds: faceIds
+  }
+  const command = new AssociateFacesCommand(input)
+  const response = await client.send(command);
+  console.log('associateFaces response:')
+  console.dir(response, { depth: null })
+}
+
+const searchUsersByImage = async (collectionId, bucket, name) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersByImageCommand/
+  const input = {
+    CollectionId: collectionId,
+    Image: {
+      S3Object: {
+        Bucket: bucket,
+        Name: name
+      }
+    }
+  }
+  const command = new SearchUsersByImageCommand(input)
+  const response = await client.send(command);
+  console.log('searchUsersByImage response:')
+  console.dir(response, { depth: null })
+}
+
 module.exports = {
   createCollection,
   listCollections,
   deleteCollection,
   describeCollection,
   detectFaces,
-  indexFaces
+  indexFaces,
+  createUser,
+  associateFaces,
+  searchUsersByImage
 }
