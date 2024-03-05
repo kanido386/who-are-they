@@ -1,10 +1,11 @@
 # who-are-they
 
 ### To Do
-- Make them functions and call them one by one as POC, don't need to be end-to-end
-- [CreateCollectionCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/CreateCollectionCommand/) → [CreateUserCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/CreateUserCommand/) → You can use [DetectFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DetectFacesCommand/) ahead of indexing to verify there is only one face in the image. → [IndexFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/IndexFacesCommand/) → [AssociateFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/AssociateFacesCommand/) → [SearchUsersByImageCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersByImageCommand/) or [SearchUsersCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersCommand/)
+- Try [SearchUsersCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersCommand/) to search mutiple users in an image
 
 ### ✅ Done
+- Make them functions and call them one by one as POC, don't need to be end-to-end
+  - [CreateCollectionCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/CreateCollectionCommand/) → [CreateUserCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/CreateUserCommand/) → You can use [DetectFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DetectFacesCommand/) ahead of indexing to verify there is only one face in the image. → [IndexFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/IndexFacesCommand/) → [AssociateFacesCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/AssociateFacesCommand/) → [SearchUsersByImageCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersByImageCommand/)
 - Attached `AmazonRekognitionFullAccess` policy directly to my IAM user
 - Read related AWS doc to get familiar with the topic
   - [Amazon Rekognition Developer Guide: Searching faces in a collection](https://docs.aws.amazon.com/rekognition/latest/dg/collections.html)

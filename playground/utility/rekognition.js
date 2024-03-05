@@ -97,6 +97,7 @@ const indexFaces = async (collectionId, bucket, name, externalImageId) => {
   const response = await client.send(command);
   console.log('indexFaces response:')
   console.dir(response, { depth: null })
+  return _.get(response, 'FaceRecords[0].Face.FaceId')
 }
 
 const createUser = async (collectionId, userId) => {
