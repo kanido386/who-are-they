@@ -9,7 +9,9 @@ const {
   IndexFacesCommand,
   CreateUserCommand,
   AssociateFacesCommand,
-  SearchUsersByImageCommand
+  SearchUsersByImageCommand,
+  SearchUsersCommand,
+  DeleteFacesCommand
 } = require('@aws-sdk/client-rekognition')
 const client = new RekognitionClient()
 
@@ -80,7 +82,7 @@ const detectFaces = async (bucket, name) => {
   return faceDetails
 }
 
-const indexFaces = async (collectionId, bucket, name, externalImageId) => {
+const indexFaces = async (collectionId, bucket, name, externalImageId, maxFaces) => {
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/IndexFacesCommand/
   const input = {
     CollectionId: collectionId,
@@ -91,13 +93,26 @@ const indexFaces = async (collectionId, bucket, name, externalImageId) => {
       }
     },
     ExternalImageId: externalImageId,
-    MaxFaces: 1
+    MaxFaces: maxFaces
   }
   const command = new IndexFacesCommand(input)
   const response = await client.send(command);
   console.log('indexFaces response:')
   console.dir(response, { depth: null })
-  return _.get(response, 'FaceRecords[0].Face.FaceId')
+  // return _.get(response, 'FaceRecords[0].Face.FaceId') // faceId
+  return _.map(_.get(response, 'FaceRecords'), 'Face.FaceId') // [faceId, faceId, faceId]
+}
+
+const deleteFaces = async (collectionId, faceIds) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DeleteFacesCommand/
+  const input = {
+    CollectionId: collectionId,
+    FaceIds: faceIds
+  }
+  const command = new DeleteFacesCommand(input)
+  const response = await client.send(command);
+  console.log('deleteFaces response:')
+  console.dir(response, { depth: null })
 }
 
 const createUser = async (collectionId, userId) => {
@@ -142,6 +157,34 @@ const searchUsersByImage = async (collectionId, bucket, name) => {
   console.dir(response, { depth: null })
 }
 
+const searchUsers = async (collectionId, faceId) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersCommand/
+  const input = {
+    CollectionId: collectionId,
+    FaceId: faceId,
+    MaxUsers: 1,
+    UserMatchThreshold: 70 // TODO:
+  }
+  const command = new SearchUsersCommand(input)
+  const response = await client.send(command);
+  console.log('searchUsers response:')
+  console.dir(response, { depth: null })
+  // {
+  //   UserMatches: [
+  //     {
+  //       Similarity: 99.99996185302734,
+  //       User: { UserId: 'myUserId', UserStatus: 'ACTIVE' }
+  //     }
+  //   ],
+  //   ...
+  // }
+  //     or
+  // {
+  //   UserMatches: [],
+  //   ...
+  // }
+}
+
 module.exports = {
   createCollection,
   listCollections,
@@ -149,7 +192,9 @@ module.exports = {
   describeCollection,
   detectFaces,
   indexFaces,
+  deleteFaces,
   createUser,
   associateFaces,
-  searchUsersByImage
+  searchUsersByImage,
+  searchUsers
 }
