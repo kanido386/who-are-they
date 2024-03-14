@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path')
 const {
   rekognition,
   s3
@@ -43,8 +44,10 @@ async function main() {
   // const filename = `${process.env.FOLDER_NAME}/1.jpeg`
   // const filename = `${process.env.FOLDER_NAME}/2.jpeg`
   // const filename = `${process.env.FOLDER_NAME}/2.webp` // InvalidImageFormatException
-  const filename = `${process.env.FOLDER_NAME}/3.jpeg`
-  const faceIds = await rekognition.indexFaces(collectionId, process.env.BUCKET_NAME, filename, undefined, 100)
+  // const filename = `${process.env.FOLDER_NAME}/3.jpeg`
+  // const faceIds = await rekognition.indexFaces(collectionId, process.env.BUCKET_NAME, filename, undefined, 100)
+  const filename = path.join(__dirname, './images/local.jpeg')
+  const faceIds = await rekognition.indexFacesLocal(collectionId, filename, undefined, 100)
   for (const faceId of faceIds) {
     await rekognition.searchUsers(collectionId, faceId)
   }

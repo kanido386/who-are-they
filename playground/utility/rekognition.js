@@ -1,3 +1,4 @@
+const fs = require('fs').promises
 const _ = require('lodash')
 const {
   RekognitionClient,
@@ -103,6 +104,25 @@ const indexFaces = async (collectionId, bucket, name, externalImageId, maxFaces)
   return _.map(_.get(response, 'FaceRecords'), 'Face.FaceId') // [faceId, faceId, faceId]
 }
 
+const indexFacesLocal = async (collectionId, filename, externalImageId, maxFaces) => {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/IndexFacesCommand/
+  const imageBuffer = await fs.readFile(filename)
+  const input = {
+    CollectionId: collectionId,
+    Image: {
+      Bytes: imageBuffer
+    },
+    ExternalImageId: externalImageId,
+    MaxFaces: maxFaces
+  }
+  const command = new IndexFacesCommand(input)
+  const response = await client.send(command);
+  console.log('indexFaces response:')
+  console.dir(response, { depth: null })
+  // return _.get(response, 'FaceRecords[0].Face.FaceId') // faceId
+  return _.map(_.get(response, 'FaceRecords'), 'Face.FaceId') // [faceId, faceId, faceId]
+}
+
 const deleteFaces = async (collectionId, faceIds) => {
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DeleteFacesCommand/
   const input = {
@@ -192,6 +212,7 @@ module.exports = {
   describeCollection,
   detectFaces,
   indexFaces,
+  indexFacesLocal,
   deleteFaces,
   createUser,
   associateFaces,
