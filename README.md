@@ -1,6 +1,9 @@
 # who-are-they
 
 ### To Do
+- Can copy and move image to user folders according to the detected faces
+
+### In Progress
 - buildUpMyDatabase with local images
 
 ### ✅ Done
