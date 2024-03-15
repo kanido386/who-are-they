@@ -1,12 +1,14 @@
 # who-are-they
 
 ### To Do
+- Tidy up the code
 - Can copy and move image to user folders according to the detected faces
 
 ### In Progress
-- buildUpMyDatabase with local images
+
 
 ### ✅ Done
+- Can buildUpMyDatabase with local images
 - Can detect the faces of local images (don't need to upload them to S3 beforehand)
 - Try [SearchUsersCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/SearchUsersCommand/) to search mutiple users in an image
 - Make them functions and call them one by one as POC, don't need to be end-to-end
