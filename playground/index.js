@@ -79,7 +79,7 @@ const buildUpMyDatabaseLocal = async (collectionId) => {
 }
 
 async function main() {
-  const collectionId = 'my-first-collection'
+  // const collectionId = 'my-first-collection'
   // await rekognition.createCollection(collectionId)
   // await buildUpMyDatabase(collectionId)
   // await rekognition.describeCollection(collectionId)
@@ -97,11 +97,32 @@ async function main() {
   // }
   // await rekognition.deleteFaces(collectionId, faceIds)
 
-  await buildUpMyDatabaseLocal('test')
+  // await buildUpMyDatabaseLocal('test')
 
   // await rekognition.listCollections()
   // await rekognition.describeCollection('test')
   // await rekognition.deleteCollection('test')
+
+  const todoFolder = path.join(__dirname, 'todo')
+  const aFolder = path.join(__dirname, 'todo', 'A')
+  const bFolder = path.join(__dirname, 'todo', 'B')
+  const cFolder = path.join(__dirname, 'todo', 'C')
+  const doneFolder = path.join(__dirname, 'todo', 'done')
+  await fs.mkdir(aFolder, { recursive: true })
+  await fs.mkdir(bFolder, { recursive: true })
+  await fs.mkdir(cFolder, { recursive: true })
+  await fs.mkdir(doneFolder, { recursive: true })
+  const files = await fs.readdir(todoFolder, { withFileTypes: true })
+  // FIXME: have bug...
+  for (const file of files) {
+    // console.log(file)
+    // if (!file.isFile || file.isDirectory) continue
+    const filename = file.name
+    if (filename !== '1.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${aFolder}/${filename}`)
+    if (filename !== '2.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${bFolder}/${filename}`)
+    if (filename === '3.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${cFolder}/${filename}`)
+    await fs.rename(`${todoFolder}/${filename}`, `${doneFolder}/${filename}`)
+  }
 }
 
 main().catch(err => console.log(err))

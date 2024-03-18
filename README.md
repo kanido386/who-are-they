@@ -2,10 +2,9 @@
 
 ### To Do
 - Tidy up the code
-- Can copy and move image to user folders according to the detected faces
 
 ### In Progress
-
+- Can copy and move image to user folders according to the detected faces
 
 ### ✅ Done
 - Can buildUpMyDatabase with local images
