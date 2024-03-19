@@ -113,10 +113,11 @@ async function main() {
   await fs.mkdir(cFolder, { recursive: true })
   await fs.mkdir(doneFolder, { recursive: true })
   const files = await fs.readdir(todoFolder, { withFileTypes: true })
-  // FIXME: have bug...
   for (const file of files) {
     // console.log(file)
-    // if (!file.isFile || file.isDirectory) continue
+    // console.log('file.isFile(): ', file.isFile())
+    // console.log('file.isDirectory(): ', file.isDirectory())
+    if (!file.isFile()) continue
     const filename = file.name
     if (filename !== '1.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${aFolder}/${filename}`)
     if (filename !== '2.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${bFolder}/${filename}`)
