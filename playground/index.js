@@ -1,5 +1,7 @@
 require('dotenv').config()
 const fs = require('fs').promises
+const fs2 = require('fs') // FIXME:
+const _ = require('lodash')
 const path = require('path')
 const {
   rekognition,
@@ -79,7 +81,7 @@ const buildUpMyDatabaseLocal = async (collectionId) => {
 }
 
 async function main() {
-  // const collectionId = 'my-first-collection'
+  const collectionId = 'test'
   // await rekognition.createCollection(collectionId)
   // await buildUpMyDatabase(collectionId)
   // await rekognition.describeCollection(collectionId)
@@ -104,13 +106,13 @@ async function main() {
   // await rekognition.deleteCollection('test')
 
   const todoFolder = path.join(__dirname, 'todo')
-  const aFolder = path.join(__dirname, 'todo', 'A')
-  const bFolder = path.join(__dirname, 'todo', 'B')
-  const cFolder = path.join(__dirname, 'todo', 'C')
+  // const aFolder = path.join(__dirname, 'todo', 'A')
+  // const bFolder = path.join(__dirname, 'todo', 'B')
+  // const cFolder = path.join(__dirname, 'todo', 'C')
   const doneFolder = path.join(__dirname, 'todo', 'done')
-  await fs.mkdir(aFolder, { recursive: true })
-  await fs.mkdir(bFolder, { recursive: true })
-  await fs.mkdir(cFolder, { recursive: true })
+  // await fs.mkdir(aFolder, { recursive: true })
+  // await fs.mkdir(bFolder, { recursive: true })
+  // await fs.mkdir(cFolder, { recursive: true })
   await fs.mkdir(doneFolder, { recursive: true })
   const files = await fs.readdir(todoFolder, { withFileTypes: true })
   for (const file of files) {
@@ -119,9 +121,27 @@ async function main() {
     // console.log('file.isDirectory(): ', file.isDirectory())
     if (!file.isFile()) continue
     const filename = file.name
-    if (filename !== '1.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${aFolder}/${filename}`)
-    if (filename !== '2.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${bFolder}/${filename}`)
-    if (filename === '3.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${cFolder}/${filename}`)
+
+    const faceIds = await rekognition.indexFacesLocal(collectionId, `${todoFolder}/${filename}`, undefined, 100)
+    for (const faceId of faceIds) {
+      const response = await rekognition.searchUsers(collectionId, faceId)
+      const userId = _.get(response, 'UserMatches[0].User.UserId')
+      // console.dir({ response, userId }, { depth: null })
+      if (!userId) {
+        continue
+      }
+      const folder = path.join(__dirname, 'todo', userId)
+      console.log('fs2.existsSync(folder): ', fs2.existsSync(folder))
+      if (!fs2.existsSync(folder)) {
+        await fs.mkdir(folder)
+      }
+      await fs.copyFile(`${todoFolder}/${filename}`, `${folder}/${filename}`)
+    }
+    await rekognition.deleteFaces(collectionId, faceIds)
+
+    // if (filename !== '1.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${aFolder}/${filename}`)
+    // if (filename !== '2.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${bFolder}/${filename}`)
+    // if (filename === '3.jpeg') await fs.copyFile(`${todoFolder}/${filename}`, `${cFolder}/${filename}`)
     await fs.rename(`${todoFolder}/${filename}`, `${doneFolder}/${filename}`)
   }
 }

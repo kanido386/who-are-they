@@ -203,6 +203,7 @@ const searchUsers = async (collectionId, faceId) => {
   //   UserMatches: [],
   //   ...
   // }
+  return response
 }
 
 module.exports = {
